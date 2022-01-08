@@ -1,6 +1,7 @@
 package covid
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"errors"
 	"io"
@@ -8,6 +9,7 @@ import (
 )
 
 type repository struct {
+	client http.Client
 }
 
 var (
@@ -16,13 +18,19 @@ var (
 )
 
 func NewCovidRepository() CovidRepository {
-	return &repository{}
+	client := http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		},
+	}
+	return &repository{client: client}
 }
 
 func (r *repository) GetCovidData() (data []Record, err error) {
-	url := "http://static.wongnai.com/devinterview/covid-cases.json"
+	url := "https://static.wongnai.com/devinterview/covid-cases.json"
 
-	response, err := http.Get(url)
+	response, err := r.client.Get(url)
+
 	if err != nil {
 		return nil, ErrGetRequestError
 	}
