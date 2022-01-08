@@ -5,6 +5,29 @@ type SummaryResponse struct {
 	AgeGroup map[string]int
 }
 
-type CovidRepository interface{}
+type ResponseRecords struct {
+	Data []Record
+}
 
-type CovidService interface{}
+type Record struct {
+	ConfirmDate    *string
+	No             *int
+	Age            *int
+	Gender         *string
+	GenderEn       *string
+	Nation         *string
+	NationEn       *string
+	Province       *string
+	ProvinceId     *int
+	District       *string
+	ProvinceEn     *string
+	StatQuarantine *int
+}
+
+type CovidRepository interface {
+	GetCovidData() (data []Record, err error)
+}
+
+type CovidService interface {
+	GetSummary() (response SummaryResponse, err error)
+}

@@ -17,5 +17,6 @@ func NewCovidHandler(router *gin.RouterGroup, service CovidService) {
 }
 
 func (h *handler) getSummary(c *gin.Context) {
-	c.String(http.StatusOK, "hello, world")
+	response, _ := h.service.GetSummary()
+	c.JSON(http.StatusOK, response)
 }
