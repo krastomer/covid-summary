@@ -17,6 +17,25 @@ func NewCovidHandler(router *gin.RouterGroup, service CovidService) {
 }
 
 func (h *handler) getSummary(c *gin.Context) {
-	response, _ := h.service.GetSummary()
+	response, err := h.service.GetSummary()
+	if err != nil {
+		switch err {
+		case ErrGetRequestError:
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"message": "Server can't pull data.",
+			})
+			return
+		case ErrConvertToStructError:
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"message": "Server can't convert data.",
+			})
+			return
+		default:
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"message": "Internal Server Error.",
+			})
+			return
+		}
+	}
 	c.JSON(http.StatusOK, response)
 }

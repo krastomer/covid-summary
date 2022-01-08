@@ -5,7 +5,7 @@ import (
 	"github.com/krastomer/covid-summary/internal/covid"
 )
 
-func Run() {
+func SetupRouter() *gin.Engine {
 	router := gin.New()
 
 	router.Use(gin.Logger(), gin.Recovery())
@@ -15,6 +15,10 @@ func Run() {
 
 	covidRouter := router.Group("/covid")
 	covid.NewCovidHandler(covidRouter, covidService)
+	return router
+}
 
+func Run() {
+	router := SetupRouter()
 	router.Run(":8080")
 }
